@@ -12,6 +12,7 @@ import HomeComponent from './components/HomeComponent.jsx';
 import Contact from './components/Contact.jsx';
 import NavBarComponent from './components/NavBarComponent.jsx';
 import FavNewsComponent from './components/FavNewsComponent.jsx';
+import Login from './components/Login.jsx';
 
 
 class MainComponent extends React.Component{
@@ -30,16 +31,16 @@ return (
 }
 }
 ReactDOM.render(
-<Router history={hashHistory}>
-             
+<Router history={browserHistory}>
+
              <Route path="/" component={MainComponent}>
              <IndexRoute component={HomeComponent}/>
              <Route path="/home" component={HomeComponent}/>
              <Route path="/FavNewsComponent" component={FavNewsComponent}/>
              <Route path="/about" component={About}/>
              <Route path="/contact" component={Contact}/>
+             <Route path="/Login" component={Login}/>
              </Route>
 
 
 </Router>,document.getElementById('content'));
-

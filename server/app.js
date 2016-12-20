@@ -4,12 +4,14 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var passport=require("passport");
+var LocalStrategy=require("passport-local").Strategy;
+var connectflash=require("connect-flash");
 var index = require('./routes/index');
 var users = require('./routes/users');
 var register = require('./routes/register');
 var newsGet = require('./routes/newsGet');
-
+var User = require('./models/user');
 //webpack integration
 var webpackDevMiddleware = require("webpack-dev-middleware");
 var webpack = require("webpack");
@@ -17,6 +19,7 @@ var webpackConfig = require("../webpack.config");
 var webpackHotMiddleware = require('webpack-hot-middleware');
 var app = express();
 var compiler = webpack(webpackConfig);
+
 
 //webpack integration
 app.use(webpackDevMiddleware(compiler, {
@@ -67,6 +70,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, './client/asset')));
 
+ app.use(passport.initialize());
+ app.use(passport.session());
+ app.use(connectflash());
 app.use('/', index);
 app.use('/users', users);
 app.use('/register', register);
@@ -94,6 +100,37 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+//passport
+
+
+
+
+//passport require
+
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    User.findOne({ username: username }, function (err, user) {
+      if (err) { return done(err); }
+      if (!user) { return done(null, false); }
+      //if (!user.verifyPassword(password)) { return done(null, false); }
+      return done(null, user);
+    });
+  }
+));
+
+
+
+//passport session
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function (err, user) {
+    done(err, user);
+  });
 });
 
 module.exports = app;

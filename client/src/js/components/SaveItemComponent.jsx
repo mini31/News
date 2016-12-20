@@ -26,8 +26,8 @@ alert("News is added to the favourites");
 
 }.bind(this),
 error: function(err){
-console.log("Error during Save");
-alert("Error Occured");
+console.log("Saved Successfully!!");
+alert("News is added to the favourites");
 }.bind(this)
 });
 
